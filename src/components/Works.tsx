@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { cn } from "@/lib/utils";
 import AnimatedSection from './AnimatedSection';
+import ResponsiveImage from './ResponsiveImage';
 
 // Sample project data
 const projects = [
@@ -59,11 +60,11 @@ const Works = () => {
                 onMouseLeave={() => setHoveredProject(null)}
               >
                 <div className="absolute inset-0 bg-black/5 z-10 transition-opacity duration-300 group-hover:opacity-0" />
-                <img 
+                <ResponsiveImage 
                   src={project.image} 
-                  alt={project.title} 
+                  alt={project.title}
                   className={cn(
-                    "w-full h-full object-cover transition-all duration-700 ease-in-out",
+                    "transition-all duration-700 ease-in-out",
                     hoveredProject === project.id ? "scale-105" : "scale-100"
                   )}
                 />

@@ -2,6 +2,7 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
 import AnimatedSection from './AnimatedSection';
+import ResponsiveImage from './ResponsiveImage';
 
 const Hero = () => {
   return (
@@ -36,11 +37,11 @@ const Hero = () => {
           
           <AnimatedSection delay={600} animation="fade-in">
             <div className="aspect-square bg-gray-100 rounded-sm overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent" />
-              <img 
+              <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent z-10" />
+              <ResponsiveImage 
                 src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
-                alt="Portfolio Hero" 
-                className="w-full h-full object-cover object-center"
+                alt="Portfolio Hero"
+                objectFit="cover"
               />
             </div>
           </AnimatedSection>

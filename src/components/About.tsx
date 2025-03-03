@@ -2,6 +2,7 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
 import AnimatedSection from './AnimatedSection';
+import ResponsiveImage from './ResponsiveImage';
 
 const About = () => {
   return (
@@ -23,10 +24,10 @@ const About = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <AnimatedSection delay={300}>
             <div className="aspect-[3/4] bg-gray-200 rounded-sm overflow-hidden">
-              <img 
+              <ResponsiveImage 
                 src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" 
-                alt="Designer at work" 
-                className="w-full h-full object-cover"
+                alt="Designer at work"
+                objectFit="cover"
               />
             </div>
           </AnimatedSection>
