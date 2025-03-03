@@ -23,8 +23,12 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
         src={src} 
         alt={alt} 
         className={cn(
-          "w-full h-full transition-all duration-300",
-          `object-${objectFit}`,
+          "w-full h-full",
+          objectFit === 'cover' ? 'object-cover' : 
+          objectFit === 'contain' ? 'object-contain' : 
+          objectFit === 'fill' ? 'object-fill' : 
+          objectFit === 'none' ? 'object-none' : 
+          'object-scale-down',
           className
         )}
         loading="lazy"

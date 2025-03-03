@@ -11,7 +11,7 @@ const Hero = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/30 backdrop-blur-[2px]" />
       </div>
       
-      <div className="container-padding max-w-7xl mx-auto relative z-10 pt-20 md:pt-0">
+      <div className="container mx-auto px-4 relative z-10 pt-20 md:pt-0 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <AnimatedSection delay={300} animation="fade-in-up">
             <div className="space-y-6 lg:space-y-8">
@@ -21,7 +21,7 @@ const Hero = () => {
                   Minimalist Portfolio
                 </h1>
               </div>
-              <p className="text-lg md:text-xl text-gray-700 max-w-lg font-light text-pretty">
+              <p className="text-lg md:text-xl text-gray-700 max-w-lg font-light">
                 I create elegant, functional designs with meticulous attention to detail and thoughtful interactions.
               </p>
               <div className="pt-4">
