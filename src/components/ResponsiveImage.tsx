@@ -17,6 +17,8 @@ const ResponsiveImage: React.FC<ResponsiveImageProps> = ({
   containerClassName,
   objectFit = 'cover'
 }) => {
+  console.log("Rendering ResponsiveImage for:", src);
+  
   return (
     <div className={cn("relative overflow-hidden w-full h-full", containerClassName)}>
       <img 

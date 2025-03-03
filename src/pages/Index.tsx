@@ -11,6 +11,7 @@ const Index = () => {
   console.log("Index component is rendering");
   
   useEffect(() => {
+    console.log("Index component useEffect running");
     // Reveal animation for elements when they come into view
     const revealElements = document.querySelectorAll('.reveal');
     
@@ -32,6 +33,7 @@ const Index = () => {
     return () => window.removeEventListener('scroll', revealOnScroll);
   }, []);
 
+  // Force immediate render, no conditions
   return (
     <div className="min-h-screen bg-white">
       <Navbar />

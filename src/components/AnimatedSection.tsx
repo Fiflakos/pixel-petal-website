@@ -15,6 +15,7 @@ const AnimatedSection = ({
   delay = 0,
   animation = 'fade-in-up'
 }: AnimatedSectionProps) => {
+  console.log("Rendering AnimatedSection");
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -48,15 +49,17 @@ const AnimatedSection = ({
     };
   }, [delay]);
 
+  // Ensure we render the children even if not visible yet
   return (
     <div
       ref={sectionRef}
       className={cn(
-        'opacity-0 transition-all duration-700 ease-out',
+        'transition-all duration-700 ease-out',
+        !isVisible && 'opacity-0',
         isVisible && 'opacity-100',
-        animation === 'fade-in-up' && 'translate-y-8',
-        animation === 'fade-in-down' && '-translate-y-8',
-        animation === 'slide-in' && '-translate-x-full',
+        animation === 'fade-in-up' && !isVisible && 'translate-y-8',
+        animation === 'fade-in-down' && !isVisible && '-translate-y-8',
+        animation === 'slide-in' && !isVisible && '-translate-x-full',
         isVisible && 'translate-y-0 translate-x-0',
         className
       )}

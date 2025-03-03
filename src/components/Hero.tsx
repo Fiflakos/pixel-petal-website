@@ -5,6 +5,8 @@ import AnimatedSection from './AnimatedSection';
 import ResponsiveImage from './ResponsiveImage';
 
 const Hero = () => {
+  console.log("Rendering Hero component");
+  
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10">
       <div className="absolute inset-0 z-0">
