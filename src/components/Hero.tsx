@@ -8,6 +8,12 @@ const Hero = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10">
       <div className="absolute inset-0 z-0">
+        <ResponsiveImage 
+          src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
+          alt="Background"
+          objectFit="cover"
+          containerClassName="w-full h-full"
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/30 backdrop-blur-[2px]" />
       </div>
       
