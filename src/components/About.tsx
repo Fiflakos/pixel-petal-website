@@ -11,10 +11,7 @@ const About = () => {
         <AnimatedSection>
           <div className="max-w-3xl mx-auto text-center mb-16">
             <p className="uppercase tracking-widest text-sm mb-3">O Mnie</p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-medium mb-6">
-              Moja Filozofia
-            </h2>
-            <p className="text-gray-700 text-lg md:text-xl leading-relaxed">
+            <p className="text-gray-700 text-lg md:text-xl leading-relaxed font-medium">
               Moje podejście do modelingu opiera się na minimalizmie i funkcjonalności. 
               Wierzę, że doskonały modeling powinien być subtelny, pozwalając treści zabłysnąć.
             </p>
@@ -33,7 +30,7 @@ const About = () => {
           <div className="space-y-10">
             <AnimatedSection delay={400}>
               <div>
-                <h3 className="text-xl font-serif font-medium mb-4">Mniej, Ale Lepiej</h3>
+                <h3 className="text-xl font-serif font-bold mb-4">Mniej, Ale Lepiej</h3>
                 <p className="text-gray-700 leading-relaxed">
                   Inspirowana dziełami mistrzów, wierzę w modeling, który jest szczery, użyteczny i nieinwazyjny. 
                   Skupiając się na tym, co naprawdę ważne, możemy tworzyć doświadczenia, które rezonują i trwają.
@@ -43,7 +40,7 @@ const About = () => {
             
             <AnimatedSection delay={500}>
               <div>
-                <h3 className="text-xl font-serif font-medium mb-4">Dbałość o Szczegóły</h3>
+                <h3 className="text-xl font-serif font-bold mb-4">Dbałość o Szczegóły</h3>
                 <p className="text-gray-700 leading-relaxed">
                   W mojej pracy każdy detal, interakcja i przejście są przemyślane. 
                   Wierzę, że detale nie są tylko detalami — to one tworzą całość.
@@ -53,7 +50,7 @@ const About = () => {
             
             <AnimatedSection delay={600}>
               <div>
-                <h3 className="text-xl font-serif font-medium mb-4">Podejście Zorientowane na Cel</h3>
+                <h3 className="text-xl font-serif font-bold mb-4">Podejście Zorientowane na Cel</h3>
                 <p className="text-gray-700 leading-relaxed">
                   Moje podejście do modelingu stawia cel sesji ponad wszystko inne, tworząc naturalny 
                   i efektowny przekaz, który jest łatwy w odbiorze.

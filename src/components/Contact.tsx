@@ -1,9 +1,62 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { cn } from "@/lib/utils";
 import AnimatedSection from './AnimatedSection';
+import { useToast } from "@/components/ui/use-toast";
+import { supabase } from '@/lib/supabase';
 
 const Contact = () => {
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      // Zapisz wiadomość w bazie danych Supabase
+      const { error } = await supabase
+        .from('contact_messages')
+        .insert([
+          { 
+            name: formData.name, 
+            email: formData.email, 
+            message: formData.message,
+            read: false
+          }
+        ]);
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Wiadomość wysłana",
+        description: "Dziękujemy za kontakt. Odpowiemy najszybciej jak to możliwe.",
+      });
+      
+      // Zresetuj formularz
+      setFormData({ name: '', email: '', message: '' });
+    } catch (error: any) {
+      console.error('Błąd wysyłania wiadomości:', error);
+      toast({
+        title: "Błąd wysyłania wiadomości",
+        description: "Nie udało się wysłać wiadomości. Spróbuj ponownie później.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section id="contact" className="section-padding bg-gray-50 overflow-hidden">
       <div className="container-padding max-w-7xl mx-auto">
@@ -14,7 +67,7 @@ const Contact = () => {
               Pracujmy Razem
             </h2>
             <p className="text-gray-700 text-lg leading-relaxed">
-              Jestem dostępna do nowych projektów i współpracy. 
+              Jestem dostępny do nowych projektów i współpracy. 
               Jeśli chcesz ze mną współpracować, skontaktuj się za pomocą poniższego formularza.
             </p>
           </div>
@@ -22,14 +75,17 @@ const Contact = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           <AnimatedSection delay={300}>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-4">
                 <label htmlFor="name" className="block text-sm uppercase tracking-wider text-gray-600">Imię i nazwisko</label>
                 <input 
                   type="text" 
-                  id="name" 
+                  id="name"
+                  value={formData.name}
+                  onChange={handleChange}
                   className="w-full border-0 border-b border-gray-300 bg-transparent py-2 focus:ring-0 focus:border-gray-900 transition-colors duration-300 outline-none"
                   placeholder="Twoje imię i nazwisko"
+                  required
                 />
               </div>
               
@@ -37,28 +93,39 @@ const Contact = () => {
                 <label htmlFor="email" className="block text-sm uppercase tracking-wider text-gray-600">Email</label>
                 <input 
                   type="email" 
-                  id="email" 
+                  id="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="w-full border-0 border-b border-gray-300 bg-transparent py-2 focus:ring-0 focus:border-gray-900 transition-colors duration-300 outline-none"
                   placeholder="Twój email"
+                  required
                 />
               </div>
               
               <div className="space-y-4">
                 <label htmlFor="message" className="block text-sm uppercase tracking-wider text-gray-600">Wiadomość</label>
                 <textarea 
-                  id="message" 
+                  id="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   rows={4} 
                   className="w-full border-0 border-b border-gray-300 bg-transparent py-2 focus:ring-0 focus:border-gray-900 transition-colors duration-300 outline-none resize-none"
                   placeholder="Opowiedz mi o swoim projekcie"
+                  required
                 />
               </div>
               
               <div className="pt-6">
                 <button 
                   type="submit" 
-                  className="px-8 py-3 border border-gray-900 text-sm uppercase tracking-wider hover:bg-gray-900 hover:text-white transition-all duration-300"
+                  className={cn(
+                    "px-8 py-3 border border-gray-900 text-sm uppercase tracking-wider transition-all duration-300",
+                    "hover:bg-gray-900 hover:text-white",
+                    isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                  )}
+                  disabled={isSubmitting}
                 >
-                  Wyślij Wiadomość
+                  {isSubmitting ? "Wysyłanie..." : "Wyślij Wiadomość"}
                 </button>
               </div>
             </form>

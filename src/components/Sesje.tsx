@@ -1,36 +1,36 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import AnimatedSection from './AnimatedSection';
 import ResponsiveImage from './ResponsiveImage';
-
-// Przykładowe dane projektów
-const projects = [
-  {
-    id: 1,
-    title: "Sesja Monochromatyczna",
-    category: "Branding",
-    image: "",
-    year: "2023"
-  },
-  {
-    id: 2,
-    title: "Minimalizm Cyfrowy",
-    category: "Projektowanie stron",
-    image: "",
-    year: "2023"
-  },
-  {
-    id: 3,
-    title: "Elegancja Technologii",
-    category: "Fotografia",
-    image: "",
-    year: "2022"
-  }
-];
+import { supabase, SessionType } from '@/lib/supabase';
 
 const Sesje = () => {
-  const [hoveredProject, setHoveredProject] = useState<number | null>(null);
+  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+  const [sessions, setSessions] = useState<SessionType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchSessions();
+  }, []);
+
+  const fetchSessions = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('sessions')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(3);
+      
+      if (error) throw error;
+      setSessions(data || []);
+    } catch (error) {
+      console.error('Błąd pobierania sesji:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section id="sesje" className="section-padding overflow-hidden">
@@ -48,31 +48,52 @@ const Sesje = () => {
         </AnimatedSection>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
-            <AnimatedSection 
-              key={project.id} 
-              delay={300 + (index * 150)}
-              className="group"
-            >
-              <div 
-                className="relative overflow-hidden aspect-[4/5] cursor-pointer bg-gray-100"
-                onMouseEnter={() => setHoveredProject(project.id)}
-                onMouseLeave={() => setHoveredProject(null)}
+          {loading ? (
+            Array(3).fill(0).map((_, index) => (
+              <AnimatedSection key={index} delay={300 + (index * 150)}>
+                <div className="relative overflow-hidden aspect-[4/5] bg-gray-100 animate-pulse">
+                </div>
+              </AnimatedSection>
+            ))
+          ) : sessions.length === 0 ? (
+            <div className="col-span-3 text-center py-10">
+              <p className="text-gray-500">Brak dostępnych sesji.</p>
+            </div>
+          ) : (
+            sessions.map((session, index) => (
+              <AnimatedSection 
+                key={session.id} 
+                delay={300 + (index * 150)}
+                className="group"
               >
-                <div className="absolute inset-0 bg-black/5 z-10 transition-opacity duration-300 group-hover:opacity-0" />
-                <div className="flex items-center justify-center h-full">
-                  <p className="text-gray-500 italic">Zdjęcie sesji</p>
+                <div 
+                  className="relative overflow-hidden aspect-[4/5] cursor-pointer"
+                  onMouseEnter={() => setHoveredProject(session.id)}
+                  onMouseLeave={() => setHoveredProject(null)}
+                >
+                  {session.image_urls && session.image_urls.length > 0 ? (
+                    <img 
+                      src={session.image_urls[0]} 
+                      alt={session.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full bg-gray-100">
+                      <p className="text-gray-500 italic">Brak zdjęcia</p>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/5 z-10 transition-opacity duration-300 group-hover:opacity-0" />
+                  <div className={cn(
+                    "absolute inset-0 bg-white/90 flex flex-col justify-end p-6 transition-transform duration-500 ease-in-out",
+                    hoveredProject === session.id ? "translate-y-0" : "translate-y-full"
+                  )}>
+                    <span className="text-sm text-gray-500">{session.year} — {session.category}</span>
+                    <h3 className="text-xl font-serif font-medium mt-1">{session.title}</h3>
+                  </div>
                 </div>
-                <div className={cn(
-                  "absolute inset-0 bg-white/90 flex flex-col justify-end p-6 transition-transform duration-500 ease-in-out",
-                  hoveredProject === project.id ? "translate-y-0" : "translate-y-full"
-                )}>
-                  <span className="text-sm text-gray-500">{project.year} — {project.category}</span>
-                  <h3 className="text-xl font-serif font-medium mt-1">{project.title}</h3>
-                </div>
-              </div>
-            </AnimatedSection>
-          ))}
+              </AnimatedSection>
+            ))
+          )}
         </div>
       </div>
     </section>
