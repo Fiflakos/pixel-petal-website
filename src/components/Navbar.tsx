@@ -1,10 +1,12 @@
 
 import { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
+import { Link, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,31 +17,44 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const navItems = [
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/#about' },
+    { name: 'Works', path: '/#works' },
+    { name: 'Sesje', path: '/sesje' },
+    { name: 'Contact', path: '/#contact' }
+  ];
+
+  const isActive = (path: string) => {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.includes(path);
+  };
+
   return (
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out py-6 px-6 md:px-12 lg:px-24',
-        isScrolled ? 'bg-white/80 backdrop-blur-md shadow-sm py-4' : 'bg-transparent'
+        isScrolled ? 'bg-white shadow-sm py-4' : 'bg-white'
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <a href="#" className="text-2xl font-serif font-medium">
+        <Link to="/" className="text-2xl font-serif font-medium text-black">
           LO.
-        </a>
+        </Link>
 
         {/* Desktop Menu */}
         <nav className="hidden md:flex items-center space-x-8">
-          {['Home', 'About', 'Works', 'Contact'].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              to={item.path}
               className={cn(
                 'text-sm uppercase tracking-wider hover:opacity-70',
-                isScrolled ? 'text-gray-900' : 'text-gray-900'
+                isActive(item.path) ? 'text-black font-medium' : 'text-gray-700'
               )}
             >
-              {item}
-            </a>
+              {item.name}
+            </Link>
           ))}
         </nav>
 
@@ -80,15 +95,18 @@ const Navbar = () => {
         )}
       >
         <nav className="flex flex-col items-center space-y-8">
-          {['Home', 'About', 'Works', 'Contact'].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              className="text-xl uppercase tracking-wider text-gray-900 hover:text-gray-600"
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              to={item.path}
+              className={cn(
+                "text-xl uppercase tracking-wider hover:text-gray-600",
+                isActive(item.path) ? 'text-black font-medium' : 'text-gray-700'
+              )}
               onClick={() => setIsMenuOpen(false)}
             >
-              {item}
-            </a>
+              {item.name}
+            </Link>
           ))}
         </nav>
       </div>

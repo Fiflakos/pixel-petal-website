@@ -2,42 +2,37 @@
 import React from 'react';
 import { cn } from "@/lib/utils";
 import AnimatedSection from './AnimatedSection';
-import ResponsiveImage from './ResponsiveImage';
 
 const Hero = () => {
   console.log("Rendering Hero component");
   
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10">
-      <div className="absolute inset-0 z-0">
-        <ResponsiveImage 
-          src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
-          alt="Background"
-          objectFit="cover"
-          containerClassName="w-full h-full"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/30 backdrop-blur-[2px]" />
-      </div>
-      
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10 bg-white">
       <div className="container mx-auto px-4 relative z-10 pt-20 md:pt-0 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <AnimatedSection delay={300} animation="fade-in-up">
             <div className="space-y-6 lg:space-y-8">
               <div className="space-y-2">
-                <p className="uppercase tracking-widest text-sm md:text-base font-light">Welcome</p>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-medium leading-tight">
-                  Minimalist Portfolio
+                <p className="uppercase tracking-widest text-sm md:text-base font-light text-black">Welcome</p>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-medium leading-tight text-black">
+                  Model Portfolio
                 </h1>
               </div>
               <p className="text-lg md:text-xl text-gray-700 max-w-lg font-light">
-                I create elegant, functional designs with meticulous attention to detail and thoughtful interactions.
+                Elegant, professional modeling work with attention to detail and artistic expression.
               </p>
-              <div className="pt-4">
+              <div className="pt-4 flex space-x-4">
                 <a 
                   href="#works" 
                   className="inline-block border border-gray-900 px-8 py-3 text-sm uppercase tracking-wider hover:bg-gray-900 hover:text-white transition-all duration-300"
                 >
                   View Work
+                </a>
+                <a 
+                  href="/sesje" 
+                  className="inline-block bg-gray-900 text-white px-8 py-3 text-sm uppercase tracking-wider hover:bg-gray-700 transition-all duration-300"
+                >
+                  Sesje
                 </a>
               </div>
             </div>
@@ -45,12 +40,9 @@ const Hero = () => {
           
           <AnimatedSection delay={600} animation="fade-in">
             <div className="aspect-square bg-gray-100 rounded-sm overflow-hidden relative">
-              <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent z-10" />
-              <ResponsiveImage 
-                src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
-                alt="Portfolio Hero"
-                objectFit="cover"
-              />
+              <div className="flex items-center justify-center h-full">
+                <p className="text-gray-500 italic">Featured Image</p>
+              </div>
             </div>
           </AnimatedSection>
         </div>

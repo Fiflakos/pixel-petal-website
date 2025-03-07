@@ -12,6 +12,10 @@ const Index = () => {
   
   useEffect(() => {
     console.log("Index component useEffect running");
+    // Force immediate render to diagnose any issues
+    document.body.style.backgroundColor = "white";
+    document.body.style.color = "black";
+    
     // Reveal animation for elements when they come into view
     const revealElements = document.querySelectorAll('.reveal');
     
@@ -33,9 +37,8 @@ const Index = () => {
     return () => window.removeEventListener('scroll', revealOnScroll);
   }, []);
 
-  // Force immediate render, no conditions
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white text-black">
       <Navbar />
       <Hero />
       <About />
