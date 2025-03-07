@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { cn } from "@/lib/utils";
 import AnimatedSection from './AnimatedSection';
 import { useToast } from "@/components/ui/use-toast";
+import { supabase } from '@/lib/supabase';
 
 const Contact = () => {
   const { toast } = useToast();
@@ -22,18 +23,38 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Symulacja wysyłania danych
-    console.log("Wysyłanie formularza:", formData);
-    
-    // Tutaj normalnie byłby kod wysyłający dane do API
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      // Zapisz wiadomość w bazie danych Supabase
+      const { error } = await supabase
+        .from('contact_messages')
+        .insert([
+          { 
+            name: formData.name, 
+            email: formData.email, 
+            message: formData.message,
+            read: false
+          }
+        ]);
+      
+      if (error) throw error;
+      
       toast({
         title: "Wiadomość wysłana",
         description: "Dziękujemy za kontakt. Odpowiemy najszybciej jak to możliwe.",
       });
+      
+      // Zresetuj formularz
       setFormData({ name: '', email: '', message: '' });
-    }, 1000);
+    } catch (error: any) {
+      console.error('Błąd wysyłania wiadomości:', error);
+      toast({
+        title: "Błąd wysyłania wiadomości",
+        description: "Nie udało się wysłać wiadomości. Spróbuj ponownie później.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

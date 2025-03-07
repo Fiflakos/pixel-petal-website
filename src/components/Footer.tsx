@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -27,9 +28,14 @@ const Footer = () => {
               ))}
             </nav>
             
-            <p className="text-sm text-gray-500">
-              &copy; {year} Wszelkie Prawa Zastrzeżone
-            </p>
+            <div className="flex items-center space-x-4">
+              <p className="text-sm text-gray-500">
+                &copy; {year} Wszelkie Prawa Zastrzeżone
+              </p>
+              <Link to="/admin" className="text-sm text-gray-400 hover:text-gray-600">
+                Panel Admin
+              </Link>
+            </div>
           </div>
         </div>
       </div>
