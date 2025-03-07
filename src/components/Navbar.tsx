@@ -6,6 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNameAnimated, setIsNameAnimated] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -29,6 +30,11 @@ const Navbar = () => {
     return location.pathname.includes(path);
   };
 
+  const handleNameClick = () => {
+    setIsNameAnimated(true);
+    setTimeout(() => setIsNameAnimated(false), 1000);
+  };
+
   return (
     <header
       className={cn(
@@ -37,8 +43,15 @@ const Navbar = () => {
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link to="/" className="text-2xl font-serif font-medium text-black">
-          LO.
+        <Link 
+          to="/" 
+          className={cn(
+            "text-xl font-serif font-medium text-black transition-all duration-500",
+            isNameAnimated && "scale-110 text-gray-700"
+          )}
+          onClick={handleNameClick}
+        >
+          Wiktor Zalewski
         </Link>
 
         {/* Desktop Menu */}
