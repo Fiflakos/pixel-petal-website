@@ -18,11 +18,10 @@ const Navbar = () => {
   }, []);
 
   const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'About', path: '/#about' },
-    { name: 'Works', path: '/#works' },
-    { name: 'Sesje', path: '/sesje' },
-    { name: 'Contact', path: '/#contact' }
+    { name: 'Strona Główna', path: '/' },
+    { name: 'O Mnie', path: '/#about' },
+    { name: 'Sesje', path: '/#sesje' },
+    { name: 'Kontakt', path: '/#contact' }
   ];
 
   const isActive = (path: string) => {
@@ -62,7 +61,7 @@ const Navbar = () => {
         <button
           className="md:hidden text-gray-900 focus:outline-none"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle menu"
+          aria-label="Przełącz menu"
         >
           <div className="w-6 flex flex-col items-end space-y-1.5">
             <span 

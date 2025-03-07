@@ -16,10 +16,10 @@ const Footer = () => {
           
           <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8">
             <nav className="flex items-center space-x-6">
-              {['Home', 'About', 'Works', 'Contact'].map((item) => (
+              {['Strona Główna', 'O Mnie', 'Sesje', 'Kontakt'].map((item) => (
                 <a
                   key={item}
-                  href={`#${item.toLowerCase()}`}
+                  href={`#${item === 'Strona Główna' ? 'home' : item.toLowerCase().replace(' ', '-')}`}
                   className="text-sm uppercase tracking-wider text-gray-600 hover:text-gray-900"
                 >
                   {item}
@@ -28,7 +28,7 @@ const Footer = () => {
             </nav>
             
             <p className="text-sm text-gray-500">
-              &copy; {year} All Rights Reserved
+              &copy; {year} Wszelkie Prawa Zastrzeżone
             </p>
           </div>
         </div>

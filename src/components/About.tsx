@@ -10,13 +10,13 @@ const About = () => {
       <div className="container-padding max-w-7xl mx-auto">
         <AnimatedSection>
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <p className="uppercase tracking-widest text-sm mb-3">About</p>
+            <p className="uppercase tracking-widest text-sm mb-3">O Mnie</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-medium mb-6">
-              The Philosophy
+              Moja Filozofia
             </h2>
             <p className="text-gray-700 text-lg md:text-xl leading-relaxed">
-              My approach to design is rooted in minimalism and functionality. 
-              I believe that great design should be invisible, allowing the content to shine.
+              Moje podejście do modelingu opiera się na minimalizmie i funkcjonalności. 
+              Wierzę, że doskonały modeling powinien być subtelny, pozwalając treści zabłysnąć.
             </p>
           </div>
         </AnimatedSection>
@@ -24,41 +24,39 @@ const About = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <AnimatedSection delay={300}>
             <div className="aspect-[3/4] bg-gray-200 rounded-sm overflow-hidden">
-              <ResponsiveImage 
-                src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d" 
-                alt="Designer at work"
-                objectFit="cover"
-              />
+              <div className="flex items-center justify-center h-full">
+                <p className="text-gray-500 italic">Zdjęcie profilowe</p>
+              </div>
             </div>
           </AnimatedSection>
           
           <div className="space-y-10">
             <AnimatedSection delay={400}>
               <div>
-                <h3 className="text-xl font-serif font-medium mb-4">Less, But Better</h3>
+                <h3 className="text-xl font-serif font-medium mb-4">Mniej, Ale Lepiej</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  Inspired by Dieter Rams, I believe in designs that are honest, useful, and unobtrusive. 
-                  By focusing on what truly matters, we can create experiences that resonate and endure.
+                  Inspirowana dziełami mistrzów, wierzę w modeling, który jest szczery, użyteczny i nieinwazyjny. 
+                  Skupiając się na tym, co naprawdę ważne, możemy tworzyć doświadczenia, które rezonują i trwają.
                 </p>
               </div>
             </AnimatedSection>
             
             <AnimatedSection delay={500}>
               <div>
-                <h3 className="text-xl font-serif font-medium mb-4">Attention to Detail</h3>
+                <h3 className="text-xl font-serif font-medium mb-4">Dbałość o Szczegóły</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  In my work, every pixel, interaction, and transition is deliberate. 
-                  I believe that the details aren't just details—they make the design.
+                  W mojej pracy każdy detal, interakcja i przejście są przemyślane. 
+                  Wierzę, że detale nie są tylko detalami — to one tworzą całość.
                 </p>
               </div>
             </AnimatedSection>
             
             <AnimatedSection delay={600}>
               <div>
-                <h3 className="text-xl font-serif font-medium mb-4">User-Centered Approach</h3>
+                <h3 className="text-xl font-serif font-medium mb-4">Podejście Zorientowane na Cel</h3>
                 <p className="text-gray-700 leading-relaxed">
-                  My designs prioritize the user experience above all else, creating intuitive interfaces that feel 
-                  natural and effortless to navigate.
+                  Moje podejście do modelingu stawia cel sesji ponad wszystko inne, tworząc naturalny 
+                  i efektowny przekaz, który jest łatwy w odbiorze.
                 </p>
               </div>
             </AnimatedSection>

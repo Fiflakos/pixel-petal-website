@@ -5,12 +5,12 @@ import Footer from '../components/Footer';
 import AnimatedSection from '../components/AnimatedSection';
 
 const categories = [
-  { id: 1, name: "Nature", imageUrl: "https://images.unsplash.com/photo-1501854140801-50d01698950b", count: 12 },
-  { id: 2, name: "Studio", imageUrl: "https://images.unsplash.com/photo-1534103362078-d07e750bd0c4", count: 8 },
-  { id: 3, name: "Fashion", imageUrl: "https://images.unsplash.com/photo-1469334031218-e382a71b716b", count: 15 },
-  { id: 4, name: "Portraits", imageUrl: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04", count: 10 },
-  { id: 5, name: "Classic", imageUrl: "https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93", count: 6 },
-  { id: 6, name: "Urban", imageUrl: "https://images.unsplash.com/photo-1517760444937-f6397edcbbcd", count: 9 },
+  { id: 1, name: "Natura", count: 12 },
+  { id: 2, name: "Studio", count: 8 },
+  { id: 3, name: "Moda", count: 15 },
+  { id: 4, name: "Portrety", count: 10 },
+  { id: 5, name: "Klasyka", count: 6 },
+  { id: 6, name: "Miejskie", count: 9 },
 ];
 
 const Sesje = () => {
@@ -26,7 +26,7 @@ const Sesje = () => {
             <div className="max-w-3xl mx-auto text-center mb-16">
               <h1 className="text-4xl md:text-5xl font-serif font-medium mb-6 text-black">Sesje</h1>
               <p className="text-gray-700 text-lg leading-relaxed">
-                Browse through my photography sessions organized by categories. Each collection showcases a unique style and mood.
+                Przeglądaj moje sesje fotograficzne podzielone na kategorie. Każda kolekcja prezentuje unikalny styl i nastrój.
               </p>
             </div>
           </AnimatedSection>
@@ -38,16 +38,14 @@ const Sesje = () => {
                   href={`/sesje/${category.name.toLowerCase()}`} 
                   className="group block"
                 >
-                  <div className="aspect-[4/3] overflow-hidden relative mb-4">
-                    <img 
-                      src={category.imageUrl} 
-                      alt={category.name} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                  <div className="aspect-[4/3] overflow-hidden relative mb-4 bg-gray-100">
+                    <div className="flex items-center justify-center h-full">
+                      <p className="text-gray-500 italic">Zdjęcie kategorii {category.name}</p>
+                    </div>
                     <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-300"></div>
                   </div>
                   <h3 className="text-xl font-serif text-black mb-1">{category.name}</h3>
-                  <p className="text-gray-500 text-sm">{category.count} photos</p>
+                  <p className="text-gray-500 text-sm">{category.count} zdjęć</p>
                 </a>
               </AnimatedSection>
             ))}

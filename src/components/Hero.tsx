@@ -13,20 +13,20 @@ const Hero = () => {
           <AnimatedSection delay={300} animation="fade-in-up">
             <div className="space-y-6 lg:space-y-8">
               <div className="space-y-2">
-                <p className="uppercase tracking-widest text-sm md:text-base font-light text-black">Welcome</p>
+                <p className="uppercase tracking-widest text-sm md:text-base font-light text-black">Witaj</p>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-medium leading-tight text-black">
-                  Model Portfolio
+                  Portfolio Modelki
                 </h1>
               </div>
               <p className="text-lg md:text-xl text-gray-700 max-w-lg font-light">
-                Elegant, professional modeling work with attention to detail and artistic expression.
+                Eleganckie, profesjonalne prace modelingowe z dbałością o detal i artystyczny wyraz.
               </p>
               <div className="pt-4 flex space-x-4">
                 <a 
-                  href="#works" 
+                  href="#sesje" 
                   className="inline-block border border-gray-900 px-8 py-3 text-sm uppercase tracking-wider hover:bg-gray-900 hover:text-white transition-all duration-300"
                 >
-                  View Work
+                  Zobacz Prace
                 </a>
                 <a 
                   href="/sesje" 
@@ -41,7 +41,7 @@ const Hero = () => {
           <AnimatedSection delay={600} animation="fade-in">
             <div className="aspect-square bg-gray-100 rounded-sm overflow-hidden relative">
               <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500 italic">Featured Image</p>
+                <p className="text-gray-500 italic">Główne zdjęcie</p>
               </div>
             </div>
           </AnimatedSection>
@@ -53,7 +53,7 @@ const Hero = () => {
           <div className="w-6 h-9 border border-gray-400 rounded-full flex items-start justify-center p-1">
             <div className="w-1 h-2 bg-gray-400 rounded-full" />
           </div>
-          <span className="text-xs uppercase tracking-widest text-gray-400">Scroll</span>
+          <span className="text-xs uppercase tracking-widest text-gray-400">Przewiń</span>
         </div>
       </div>
     </section>

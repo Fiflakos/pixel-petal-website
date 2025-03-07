@@ -4,45 +4,45 @@ import { cn } from "@/lib/utils";
 import AnimatedSection from './AnimatedSection';
 import ResponsiveImage from './ResponsiveImage';
 
-// Sample project data
+// Przykładowe dane projektów
 const projects = [
   {
     id: 1,
-    title: "Monochrome Beauty",
+    title: "Sesja Monochromatyczna",
     category: "Branding",
-    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
+    image: "",
     year: "2023"
   },
   {
     id: 2,
-    title: "Digital Minimalism",
-    category: "Web Design",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
+    title: "Minimalizm Cyfrowy",
+    category: "Projektowanie stron",
+    image: "",
     year: "2023"
   },
   {
     id: 3,
-    title: "Tech Elegance",
-    category: "Photography",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
+    title: "Elegancja Technologii",
+    category: "Fotografia",
+    image: "",
     year: "2022"
   }
 ];
 
-const Works = () => {
+const Sesje = () => {
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
 
   return (
-    <section id="works" className="section-padding overflow-hidden">
+    <section id="sesje" className="section-padding overflow-hidden">
       <div className="container-padding max-w-7xl mx-auto">
         <AnimatedSection>
           <div className="max-w-3xl mx-auto text-center mb-16">
             <p className="uppercase tracking-widest text-sm mb-3">Portfolio</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-medium mb-6">
-              Selected Works
+              Wybrane Sesje
             </h2>
             <p className="text-gray-700 text-lg leading-relaxed">
-              A curated collection of my most meaningful projects, showcasing my approach to design and problem-solving.
+              Wyselekcjonowana kolekcja moich najważniejszych projektów, ukazująca moje podejście do modelingu i fotografii.
             </p>
           </div>
         </AnimatedSection>
@@ -55,19 +55,14 @@ const Works = () => {
               className="group"
             >
               <div 
-                className="relative overflow-hidden aspect-[4/5] cursor-pointer"
+                className="relative overflow-hidden aspect-[4/5] cursor-pointer bg-gray-100"
                 onMouseEnter={() => setHoveredProject(project.id)}
                 onMouseLeave={() => setHoveredProject(null)}
               >
                 <div className="absolute inset-0 bg-black/5 z-10 transition-opacity duration-300 group-hover:opacity-0" />
-                <ResponsiveImage 
-                  src={project.image} 
-                  alt={project.title}
-                  className={cn(
-                    "transition-all duration-700 ease-in-out",
-                    hoveredProject === project.id ? "scale-105" : "scale-100"
-                  )}
-                />
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-gray-500 italic">Zdjęcie sesji</p>
+                </div>
                 <div className={cn(
                   "absolute inset-0 bg-white/90 flex flex-col justify-end p-6 transition-transform duration-500 ease-in-out",
                   hoveredProject === project.id ? "translate-y-0" : "translate-y-full"
@@ -84,4 +79,4 @@ const Works = () => {
   );
 };
 
-export default Works;
+export default Sesje;
