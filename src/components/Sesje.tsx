@@ -42,7 +42,7 @@ const Sesje = () => {
               Wybrane Sesje
             </h2>
             <p className="text-gray-700 text-lg leading-relaxed">
-              Wyselekcjonowana kolekcja moich najważniejszych projektów, ukazująca moje podejście do modelingu i fotografii.
+              Wyselekcjonowane Projekty w których brałem udział jako model
             </p>
           </div>
         </AnimatedSection>

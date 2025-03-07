@@ -15,7 +15,7 @@ const Hero = () => {
               <div className="space-y-2">
                 <p className="uppercase tracking-widest text-sm md:text-base font-light text-black">Witaj</p>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-medium leading-tight text-black">
-                  Portfolio Modelki
+                  Wiktor Zalewski
                 </h1>
               </div>
               <p className="text-lg md:text-xl text-gray-700 max-w-lg font-light">
