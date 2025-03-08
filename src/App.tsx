@@ -11,7 +11,14 @@ import Admin from "./pages/Admin";
 import AdminDashboard from "./pages/AdminDashboard";
 import SessionForm from "./pages/SessionForm";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 0,
+      refetchOnWindowFocus: false
+    }
+  }
+});
 
 const App = () => {
   console.log("App is rendering");

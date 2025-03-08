@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import AnimatedSection from './AnimatedSection';
-import ResponsiveImage from './ResponsiveImage';
 import { supabase, SessionType } from '@/lib/supabase';
 
 const Sesje = () => {
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const [sessions, setSessions] = useState<SessionType[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchSessions();
@@ -17,16 +17,85 @@ const Sesje = () => {
   const fetchSessions = async () => {
     try {
       setLoading(true);
+      setError(null);
+      
+      // Przykładowe dane do wyświetlenia, gdy nie ma połączenia z Supabase
+      const placeholderSessions: SessionType[] = [
+        {
+          id: '1',
+          title: 'Sesja Letnia',
+          description: 'Letnia sesja zdjęciowa w parku',
+          category: 'Plener',
+          year: '2023',
+          image_urls: [],
+          created_at: new Date().toISOString()
+        },
+        {
+          id: '2',
+          title: 'Portret Studyjny',
+          description: 'Profesjonalna sesja portretowa w studio',
+          category: 'Studio',
+          year: '2023',
+          image_urls: [],
+          created_at: new Date().toISOString()
+        },
+        {
+          id: '3',
+          title: 'Modelka Fashion',
+          description: 'Sesja modowa dla magazynu',
+          category: 'Moda',
+          year: '2022',
+          image_urls: [],
+          created_at: new Date().toISOString()
+        }
+      ];
+      
       const { data, error } = await supabase
         .from('sessions')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(3);
       
-      if (error) throw error;
-      setSessions(data || []);
-    } catch (error) {
-      console.error('Błąd pobierania sesji:', error);
+      if (error) {
+        console.warn('Błąd pobierania sesji z Supabase, używam danych placeholderowych:', error.message);
+        setSessions(placeholderSessions);
+      } else {
+        setSessions(data && data.length > 0 ? data : placeholderSessions);
+      }
+    } catch (err) {
+      console.error('Błąd pobierania sesji:', err);
+      setError('Nie udało się pobrać sesji. Używam danych przykładowych.');
+      
+      // Użyj danych przykładowych w przypadku błędu
+      setSessions([
+        {
+          id: '1',
+          title: 'Sesja Letnia',
+          description: 'Letnia sesja zdjęciowa w parku',
+          category: 'Plener',
+          year: '2023',
+          image_urls: [],
+          created_at: new Date().toISOString()
+        },
+        {
+          id: '2',
+          title: 'Portret Studyjny',
+          description: 'Profesjonalna sesja portretowa w studio',
+          category: 'Studio',
+          year: '2023',
+          image_urls: [],
+          created_at: new Date().toISOString()
+        },
+        {
+          id: '3',
+          title: 'Modelka Fashion',
+          description: 'Sesja modowa dla magazynu',
+          category: 'Moda',
+          year: '2022',
+          image_urls: [],
+          created_at: new Date().toISOString()
+        }
+      ]);
     } finally {
       setLoading(false);
     }
@@ -44,6 +113,7 @@ const Sesje = () => {
             <p className="text-gray-700 text-lg leading-relaxed">
               Wyselekcjonowana kolekcja moich najważniejszych projektów, ukazująca moje podejście do modelingu i fotografii.
             </p>
+            {error && <p className="text-orange-500 mt-2">{error}</p>}
           </div>
         </AnimatedSection>
 
@@ -67,7 +137,7 @@ const Sesje = () => {
                 className="group"
               >
                 <div 
-                  className="relative overflow-hidden aspect-[4/5] cursor-pointer"
+                  className="relative overflow-hidden aspect-[4/5] cursor-pointer bg-gray-100"
                   onMouseEnter={() => setHoveredProject(session.id)}
                   onMouseLeave={() => setHoveredProject(null)}
                 >
@@ -79,7 +149,7 @@ const Sesje = () => {
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full bg-gray-100">
-                      <p className="text-gray-500 italic">Brak zdjęcia</p>
+                      <p className="text-gray-500 italic">Zdjęcie sesji {session.title}</p>
                     </div>
                   )}
                   <div className="absolute inset-0 bg-black/5 z-10 transition-opacity duration-300 group-hover:opacity-0" />

@@ -12,7 +12,6 @@ const Index = () => {
   
   useEffect(() => {
     console.log("Index component useEffect running");
-    // Force immediate render to diagnose any issues
     document.body.style.backgroundColor = "white";
     document.body.style.color = "black";
     
