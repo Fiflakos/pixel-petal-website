@@ -1,18 +1,22 @@
 
 import { createClient } from '@supabase/supabase-js';
 
+// Pobierz zmienne środowiskowe
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+// Sprawdź, czy zmienne środowiskowe są dostępne
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn('Brakujące zmienne środowiskowe Supabase. Upewnij się, że ustawiłeś zmienne VITE_SUPABASE_URL i VITE_SUPABASE_ANON_KEY.');
+  console.warn('Brakujące zmienne środowiskowe Supabase. Używam wartości placeholder do debugowania.');
 }
 
+// Utwórz klienta Supabase (używając wartości domyślnych jeśli brak zmiennych środowiskowych)
 export const supabase = createClient(
-  supabaseUrl || '', 
-  supabaseAnonKey || ''
+  supabaseUrl || 'https://placeholder-url.supabase.co', 
+  supabaseAnonKey || 'placeholder-key'
 );
 
+// Eksportuj typy danych
 export type SessionType = {
   id: string;
   title: string;

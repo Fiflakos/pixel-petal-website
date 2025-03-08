@@ -50,6 +50,7 @@ const Sesje = () => {
         }
       ];
       
+      console.log('Próba pobrania sesji z Supabase...');
       const { data, error } = await supabase
         .from('sessions')
         .select('*')
@@ -60,6 +61,7 @@ const Sesje = () => {
         console.warn('Błąd pobierania sesji z Supabase, używam danych placeholderowych:', error.message);
         setSessions(placeholderSessions);
       } else {
+        console.log('Pobrano sesje z Supabase:', data);
         setSessions(data && data.length > 0 ? data : placeholderSessions);
       }
     } catch (err) {

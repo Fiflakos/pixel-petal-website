@@ -11,11 +11,13 @@ import Admin from "./pages/Admin";
 import AdminDashboard from "./pages/AdminDashboard";
 import SessionForm from "./pages/SessionForm";
 
+// Tworzenie klienta zapytań z odpowiednią konfiguracją
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 0,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
+      staleTime: 60000
     }
   }
 });

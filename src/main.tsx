@@ -5,8 +5,13 @@ import './index.css'
 
 console.log("Main is initializing");
 
+// Znajdź element root i upewnij się, że istnieje
 const rootElement = document.getElementById("root");
-if (!rootElement) throw new Error("Failed to find the root element");
+if (!rootElement) {
+  console.error("Failed to find the root element");
+  throw new Error("Failed to find the root element");
+}
 
+// Renderuj aplikację
 const root = createRoot(rootElement);
 root.render(<App />);

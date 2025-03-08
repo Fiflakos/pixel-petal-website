@@ -33,17 +33,20 @@ const Index = () => {
     window.addEventListener('scroll', revealOnScroll);
     revealOnScroll(); // Check on initial load
     
+    // Wyczyszczenie event listenera przy odmontowaniu komponentu
     return () => window.removeEventListener('scroll', revealOnScroll);
   }, []);
 
   return (
     <div className="min-h-screen bg-white text-black">
       <Navbar />
-      <Hero />
-      <About />
-      <Sesje />
-      <Contact />
-      <Footer />
+      <div className="content-container">
+        <Hero />
+        <About />
+        <Sesje />
+        <Contact />
+        <Footer />
+      </div>
     </div>
   );
 };
