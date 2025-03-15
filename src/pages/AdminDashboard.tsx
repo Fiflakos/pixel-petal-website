@@ -5,6 +5,8 @@ import { supabase, SessionType, ContactMessage } from '../lib/supabase';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { objectsToCSV, downloadCSV } from '@/utils/csvUtils';
 
 const AdminDashboard = () => {
   const [sessions, setSessions] = useState<SessionType[]>([]);
@@ -89,6 +91,71 @@ const AdminDashboard = () => {
     }
   };
 
+  const exportSessions = () => {
+    if (sessions.length === 0) {
+      toast({
+        title: "Brak danych",
+        description: "Nie ma sesji do wyeksportowania.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      // Przygotuj dane do eksportu (pomiń obrazy dla przejrzystości CSV)
+      const exportData = sessions.map(session => ({
+        id: session.id,
+        title: session.title,
+        description: session.description,
+        category: session.category,
+        year: session.year,
+        created_at: session.created_at,
+        image_count: session.image_urls?.length || 0
+      }));
+
+      const csvData = objectsToCSV(exportData);
+      downloadCSV(csvData, `sessions_export_${new Date().toISOString().split('T')[0]}.csv`);
+
+      toast({
+        title: "Eksport zakończony",
+        description: "Dane sesji zostały wyeksportowane pomyślnie."
+      });
+    } catch (error: any) {
+      toast({
+        title: "Błąd eksportu",
+        description: error.message || "Nie udało się wyeksportować danych.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const exportMessages = () => {
+    if (messages.length === 0) {
+      toast({
+        title: "Brak danych",
+        description: "Nie ma wiadomości do wyeksportowania.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const csvData = objectsToCSV(messages);
+      downloadCSV(csvData, `messages_export_${new Date().toISOString().split('T')[0]}.csv`);
+
+      toast({
+        title: "Eksport zakończony",
+        description: "Wiadomości zostały wyeksportowane pomyślnie."
+      });
+    } catch (error: any) {
+      toast({
+        title: "Błąd eksportu",
+        description: error.message || "Nie udało się wyeksportować danych.",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
@@ -113,6 +180,16 @@ const AdminDashboard = () => {
           </TabsList>
           
           <TabsContent value="sessions">
+            <div className="flex justify-between mb-4 items-center">
+              <h2 className="text-xl font-medium">Lista sesji</h2>
+              <Button 
+                variant="outline" 
+                onClick={exportSessions}
+                disabled={sessions.length === 0 || loading}
+              >
+                Eksportuj do CSV
+              </Button>
+            </div>
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
               {loading ? (
                 <div className="p-6 text-center">Ładowanie sesji zdjęciowych...</div>
@@ -124,31 +201,50 @@ const AdminDashboard = () => {
                   </Button>
                 </div>
               ) : (
-                <ul className="divide-y divide-gray-200">
-                  {sessions.map((session) => (
-                    <li key={session.id}>
-                      <div className="px-6 py-4 flex items-center justify-between">
-                        <div>
-                          <h3 className="text-lg font-medium">{session.title}</h3>
-                          <p className="text-sm text-gray-500">{session.category} | {session.year}</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button variant="outline" size="sm" onClick={() => navigate(`/admin/edit-session/${session.id}`)}>
-                            Edytuj
-                          </Button>
-                          <Button variant="destructive" size="sm">
-                            Usuń
-                          </Button>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Tytuł</TableHead>
+                      <TableHead>Kategoria</TableHead>
+                      <TableHead>Rok</TableHead>
+                      <TableHead>Akcje</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {sessions.map((session) => (
+                      <TableRow key={session.id}>
+                        <TableCell>{session.title}</TableCell>
+                        <TableCell>{session.category}</TableCell>
+                        <TableCell>{session.year}</TableCell>
+                        <TableCell>
+                          <div className="flex space-x-2">
+                            <Button variant="outline" size="sm" onClick={() => navigate(`/admin/edit-session/${session.id}`)}>
+                              Edytuj
+                            </Button>
+                            <Button variant="destructive" size="sm">
+                              Usuń
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               )}
             </div>
           </TabsContent>
           
           <TabsContent value="messages">
+            <div className="flex justify-between mb-4 items-center">
+              <h2 className="text-xl font-medium">Wiadomości kontaktowe</h2>
+              <Button 
+                variant="outline" 
+                onClick={exportMessages}
+                disabled={messages.length === 0 || loading}
+              >
+                Eksportuj do CSV
+              </Button>
+            </div>
             <div className="bg-white shadow overflow-hidden sm:rounded-md">
               {loading ? (
                 <div className="p-6 text-center">Ładowanie wiadomości...</div>
