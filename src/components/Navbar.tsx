@@ -18,21 +18,42 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Updated navigation items with proper paths
   const navItems = [
     { name: 'Strona Główna', path: '/' },
     { name: 'O Mnie', path: '/#about' },
-    { name: 'Sesje', path: '/#sesje' },
+    { name: 'Sesje', path: '/sesje' },
     { name: 'Kontakt', path: '/#contact' }
   ];
 
+  // Improved active link detection
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
-    return location.pathname.includes(path);
+    if (path.startsWith('/#')) return location.pathname === '/' && location.hash === path.substring(1);
+    return location.pathname.startsWith(path);
   };
 
   const handleNameClick = () => {
     setIsNameAnimated(true);
     setTimeout(() => setIsNameAnimated(false), 1000);
+  };
+
+  // Function to handle navigation
+  const handleNavigation = (path: string, e: React.MouseEvent) => {
+    if (path.includes('#') && location.pathname === '/') {
+      e.preventDefault();
+      const targetId = path.split('#')[1];
+      const element = document.getElementById(targetId);
+      if (element) {
+        window.scrollTo({
+          top: element.offsetTop - 100,
+          behavior: 'smooth'
+        });
+      }
+      setIsMenuOpen(false);
+    } else if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
   };
 
   return (
@@ -64,6 +85,7 @@ const Navbar = () => {
                 'text-sm uppercase tracking-wider hover:opacity-70',
                 isActive(item.path) ? 'text-black font-medium' : 'text-gray-700'
               )}
+              onClick={(e) => handleNavigation(item.path, e)}
             >
               {item.name}
             </Link>
@@ -115,7 +137,7 @@ const Navbar = () => {
                 "text-xl uppercase tracking-wider hover:text-gray-600",
                 isActive(item.path) ? 'text-black font-medium' : 'text-gray-700'
               )}
-              onClick={() => setIsMenuOpen(false)}
+              onClick={(e) => handleNavigation(item.path, e)}
             >
               {item.name}
             </Link>
