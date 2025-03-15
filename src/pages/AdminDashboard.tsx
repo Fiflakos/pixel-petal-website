@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import SessionList from '@/components/admin/SessionList';
 import MessageList from '@/components/admin/MessageList';
+import CSVTemplateDownloader from '@/components/admin/CSVTemplateDownloader';
 
 const AdminDashboard = () => {
   const [sessions, setSessions] = useState<SessionType[]>([]);
@@ -108,6 +109,9 @@ const AdminDashboard = () => {
       </header>
       
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        {/* Added CSV Template Downloader component */}
+        <CSVTemplateDownloader />
+        
         <Tabs defaultValue="sessions">
           <TabsList className="mb-8">
             <TabsTrigger value="sessions">Sesje zdjęciowe</TabsTrigger>
