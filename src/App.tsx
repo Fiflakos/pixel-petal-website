@@ -4,12 +4,15 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import PrivateRoute from "./components/PrivateRoute";
 import Index from "./pages/Index";
 import Sesje from "./pages/Sesje";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminDashboard from "./pages/AdminDashboard";
 import SessionForm from "./pages/SessionForm";
+import Auth from "./pages/Auth";
 
 // Tworzenie klienta zapytań z odpowiednią konfiguracją
 const queryClient = new QueryClient({
@@ -27,19 +30,34 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/sesje" element={<Sesje />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/new-session" element={<SessionForm />} />
-            <Route path="/admin/edit-session/:id" element={<SessionForm />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Toaster />
-          <Sonner />
-        </BrowserRouter>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/sesje" element={<Sesje />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/dashboard" element={
+                <PrivateRoute requireAdmin={true}>
+                  <AdminDashboard />
+                </PrivateRoute>
+              } />
+              <Route path="/admin/new-session" element={
+                <PrivateRoute requireAdmin={true}>
+                  <SessionForm />
+                </PrivateRoute>
+              } />
+              <Route path="/admin/edit-session/:id" element={
+                <PrivateRoute requireAdmin={true}>
+                  <SessionForm />
+                </PrivateRoute>
+              } />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <Toaster />
+            <Sonner />
+          </BrowserRouter>
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

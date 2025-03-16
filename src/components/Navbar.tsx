@@ -2,12 +2,16 @@
 import { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { UserCircle, LogOut } from 'lucide-react';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNameAnimated, setIsNameAnimated] = useState(false);
   const location = useLocation();
+  const { user, isAdmin, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,6 +60,11 @@ const Navbar = () => {
     }
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+    setIsMenuOpen(false);
+  };
+
   return (
     <header
       className={cn(
@@ -90,6 +99,39 @@ const Navbar = () => {
               {item.name}
             </Link>
           ))}
+          
+          {/* Auth links for desktop */}
+          {user ? (
+            <div className="flex items-center gap-4">
+              {isAdmin && (
+                <Link
+                  to="/admin/dashboard"
+                  className="text-sm uppercase tracking-wider hover:opacity-70 text-gray-700"
+                >
+                  Panel Admin
+                </Link>
+              )}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="flex items-center gap-1"
+                onClick={handleSignOut}
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-wider">Wyloguj</span>
+              </Button>
+            </div>
+          ) : (
+            <Link
+              to="/auth"
+              className="text-sm uppercase tracking-wider hover:opacity-70 text-gray-700"
+            >
+              <Button variant="outline" size="sm" className="gap-1">
+                <UserCircle className="h-4 w-4" />
+                <span>Konto</span>
+              </Button>
+            </Link>
+          )}
         </nav>
 
         {/* Mobile Menu Button */}
@@ -142,6 +184,37 @@ const Navbar = () => {
               {item.name}
             </Link>
           ))}
+          
+          {/* Auth links for mobile */}
+          {user ? (
+            <>
+              {isAdmin && (
+                <Link
+                  to="/admin/dashboard"
+                  className="text-xl uppercase tracking-wider hover:text-gray-600 text-gray-700"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Panel Admin
+                </Link>
+              )}
+              <Button 
+                variant="ghost" 
+                size="lg" 
+                className="text-xl uppercase tracking-wider hover:text-gray-600 text-gray-700"
+                onClick={handleSignOut}
+              >
+                Wyloguj
+              </Button>
+            </>
+          ) : (
+            <Link
+              to="/auth"
+              className="text-xl uppercase tracking-wider hover:text-gray-600 text-gray-700"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Konto
+            </Link>
+          )}
         </nav>
       </div>
     </header>
