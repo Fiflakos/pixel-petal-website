@@ -42,6 +42,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          image_urls: string[] | null
           title: string
           year: string
         }
@@ -50,6 +51,7 @@ export type Database = {
           created_at?: string
           description: string
           id?: string
+          image_urls?: string[] | null
           title: string
           year: string
         }
@@ -58,6 +60,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          image_urls?: string[] | null
           title?: string
           year?: string
         }
