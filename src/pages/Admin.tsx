@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -16,7 +15,7 @@ const AdminLogin = () => {
   const navigate = useNavigate();
 
   // List of admin emails - add your email here
-  const adminEmails = ['your@email.com']; // Replace with your actual email
+  const adminEmails = ['your@email.com', 'fili11@op.pl']; // Added your email to the admins list
 
   useEffect(() => {
     const checkSession = async () => {
