@@ -15,24 +15,39 @@ const AdminLogin = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // List of admin emails - add your email here
+  const adminEmails = ['your@email.com']; // Replace with your actual email
+
   useEffect(() => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
-        setIsAuthenticated(true);
-        navigate('/admin/dashboard');
+        // Check if user email is in admin list
+        const userEmail = data.session.user.email;
+        if (userEmail && adminEmails.includes(userEmail)) {
+          setIsAuthenticated(true);
+          navigate('/admin/dashboard');
+        } else {
+          // Not an admin, sign them out
+          await supabase.auth.signOut();
+          toast({
+            title: "Brak uprawnień",
+            description: "Tylko administratorzy mają dostęp do panelu.",
+            variant: "destructive"
+          });
+        }
       }
     };
     
     checkSession();
-  }, [navigate]);
+  }, [navigate, toast]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
@@ -41,12 +56,23 @@ const AdminLogin = () => {
         throw error;
       }
       
-      toast({
-        title: "Zalogowano pomyślnie",
-        description: "Przekierowywanie do panelu administratora...",
-      });
-      
-      navigate('/admin/dashboard');
+      // Check if user is an admin
+      if (data.user && data.user.email && adminEmails.includes(data.user.email)) {
+        toast({
+          title: "Zalogowano pomyślnie",
+          description: "Przekierowywanie do panelu administratora...",
+        });
+        
+        navigate('/admin/dashboard');
+      } else {
+        // Not an admin, sign them out
+        await supabase.auth.signOut();
+        toast({
+          title: "Brak uprawnień",
+          description: "Tylko administratorzy mają dostęp do panelu.",
+          variant: "destructive"
+        });
+      }
     } catch (error: any) {
       toast({
         title: "Błąd logowania",

@@ -16,10 +16,27 @@ const AdminDashboard = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // List of admin emails - add your email here
+  const adminEmails = ['your@email.com']; // Replace with your actual email
+
   useEffect(() => {
     const checkAuth = async () => {
       const { data } = await supabase.auth.getSession();
       if (!data.session) {
+        navigate('/admin');
+        return;
+      }
+
+      // Check if user email is in admin list
+      const userEmail = data.session.user.email;
+      if (!userEmail || !adminEmails.includes(userEmail)) {
+        // Not an admin, sign them out
+        await supabase.auth.signOut();
+        toast({
+          title: "Brak uprawnień",
+          description: "Tylko administratorzy mają dostęp do panelu.",
+          variant: "destructive"
+        });
         navigate('/admin');
         return;
       }
@@ -28,7 +45,7 @@ const AdminDashboard = () => {
     };
     
     checkAuth();
-  }, [navigate]);
+  }, [navigate, toast]);
 
   const fetchData = async () => {
     setLoading(true);
