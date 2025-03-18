@@ -12,7 +12,6 @@ const Index = () => {
   
   useEffect(() => {
     console.log("Index component useEffect running");
-    // Force immediate render to diagnose any issues
     document.body.style.backgroundColor = "white";
     document.body.style.color = "black";
     
@@ -34,17 +33,20 @@ const Index = () => {
     window.addEventListener('scroll', revealOnScroll);
     revealOnScroll(); // Check on initial load
     
+    // Wyczyszczenie event listenera przy odmontowaniu komponentu
     return () => window.removeEventListener('scroll', revealOnScroll);
   }, []);
 
   return (
     <div className="min-h-screen bg-white text-black">
       <Navbar />
-      <Hero />
-      <About />
-      <Sesje />
-      <Contact />
-      <Footer />
+      <div className="content-container">
+        <Hero />
+        <About />
+        <Sesje />
+        <Contact />
+        <Footer />
+      </div>
     </div>
   );
 };

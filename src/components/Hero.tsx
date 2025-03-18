@@ -15,8 +15,15 @@ const Hero = () => {
               <div className="space-y-2">
                 <p className="uppercase tracking-widest text-sm md:text-base font-light text-black">Witaj</p>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-medium leading-tight text-black">
+<<<<<<< HEAD
                   Wiktor Zalewski
+=======
+                  Portfolio
+>>>>>>> bad3f3c28de8b7250b2bf17d6bdcb3c388c538ff
                 </h1>
+                <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif font-bold leading-tight text-black">
+                  Wiktor Zalewski
+                </h2>
               </div>
               <p className="text-lg md:text-xl text-gray-700 max-w-lg font-light">
                 Eleganckie, profesjonalne prace modelingowe z dbałością o detal i artystyczny wyraz.

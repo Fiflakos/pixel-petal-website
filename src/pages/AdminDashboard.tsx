@@ -5,6 +5,10 @@ import { supabase, SessionType, ContactMessage } from '../lib/supabase';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import SessionList from '@/components/admin/SessionList';
+import MessageList from '@/components/admin/MessageList';
+import CSVTemplateDownloader from '@/components/admin/CSVTemplateDownloader';
+import { useAuth } from '../contexts/AuthContext';
 
 const AdminDashboard = () => {
   const [sessions, setSessions] = useState<SessionType[]>([]);
@@ -12,11 +16,31 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { isAdmin, adminEmails } = useAuth();
 
   useEffect(() => {
     const checkAuth = async () => {
       const { data } = await supabase.auth.getSession();
       if (!data.session) {
+        toast({
+          title: "Brak autoryzacji",
+          description: "Musisz się zalogować, aby uzyskać dostęp do panelu administracyjnego.",
+          variant: "destructive"
+        });
+        navigate('/admin');
+        return;
+      }
+
+      // Check if user email is in admin list
+      const userEmail = data.session.user.email;
+      if (!userEmail || !adminEmails.includes(userEmail)) {
+        // Not an admin, sign them out
+        await supabase.auth.signOut();
+        toast({
+          title: "Brak uprawnień",
+          description: "Tylko administratorzy mają dostęp do panelu.",
+          variant: "destructive"
+        });
         navigate('/admin');
         return;
       }
@@ -25,7 +49,14 @@ const AdminDashboard = () => {
     };
     
     checkAuth();
-  }, [navigate]);
+  }, [navigate, toast, adminEmails]);
+
+  // Make sure this component is only rendered for admins
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate('/admin');
+    }
+  }, [isAdmin, navigate]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -106,6 +137,8 @@ const AdminDashboard = () => {
       </header>
       
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        <CSVTemplateDownloader />
+        
         <Tabs defaultValue="sessions">
           <TabsList className="mb-8">
             <TabsTrigger value="sessions">Sesje zdjęciowe</TabsTrigger>
@@ -113,76 +146,19 @@ const AdminDashboard = () => {
           </TabsList>
           
           <TabsContent value="sessions">
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-              {loading ? (
-                <div className="p-6 text-center">Ładowanie sesji zdjęciowych...</div>
-              ) : sessions.length === 0 ? (
-                <div className="p-6 text-center">
-                  <p>Brak sesji zdjęciowych</p>
-                  <Button className="mt-4" onClick={() => navigate('/admin/new-session')}>
-                    Dodaj pierwszą sesję
-                  </Button>
-                </div>
-              ) : (
-                <ul className="divide-y divide-gray-200">
-                  {sessions.map((session) => (
-                    <li key={session.id}>
-                      <div className="px-6 py-4 flex items-center justify-between">
-                        <div>
-                          <h3 className="text-lg font-medium">{session.title}</h3>
-                          <p className="text-sm text-gray-500">{session.category} | {session.year}</p>
-                        </div>
-                        <div className="flex space-x-2">
-                          <Button variant="outline" size="sm" onClick={() => navigate(`/admin/edit-session/${session.id}`)}>
-                            Edytuj
-                          </Button>
-                          <Button variant="destructive" size="sm">
-                            Usuń
-                          </Button>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            <SessionList 
+              sessions={sessions} 
+              loading={loading} 
+              onRefresh={fetchData}
+            />
           </TabsContent>
           
           <TabsContent value="messages">
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-              {loading ? (
-                <div className="p-6 text-center">Ładowanie wiadomości...</div>
-              ) : messages.length === 0 ? (
-                <div className="p-6 text-center">Brak wiadomości kontaktowych</div>
-              ) : (
-                <ul className="divide-y divide-gray-200">
-                  {messages.map((message) => (
-                    <li key={message.id} className={message.read ? "bg-white" : "bg-blue-50"}>
-                      <div className="px-6 py-4">
-                        <div className="flex justify-between">
-                          <h3 className="text-lg font-medium">{message.name}</h3>
-                          <span className="text-sm text-gray-500">
-                            {new Date(message.created_at).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <p className="text-sm">{message.email}</p>
-                        <p className="mt-2">{message.message}</p>
-                        {!message.read && (
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="mt-2" 
-                            onClick={() => markAsRead(message.id)}
-                          >
-                            Oznacz jako przeczytane
-                          </Button>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            <MessageList 
+              messages={messages} 
+              loading={loading} 
+              onMarkAsRead={markAsRead} 
+            />
           </TabsContent>
         </Tabs>
       </main>

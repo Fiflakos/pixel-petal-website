@@ -2,12 +2,16 @@
 import { useState, useEffect } from 'react';
 import { cn } from "@/lib/utils";
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { UserCircle, LogOut } from 'lucide-react';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNameAnimated, setIsNameAnimated] = useState(false);
   const location = useLocation();
+  const { user, isAdmin, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,21 +22,47 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Updated navigation items with proper paths
   const navItems = [
     { name: 'Strona Główna', path: '/' },
     { name: 'O Mnie', path: '/#about' },
-    { name: 'Sesje', path: '/#sesje' },
+    { name: 'Sesje', path: '/sesje' },
     { name: 'Kontakt', path: '/#contact' }
   ];
 
+  // Improved active link detection
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
-    return location.pathname.includes(path);
+    if (path.startsWith('/#')) return location.pathname === '/' && location.hash === path.substring(1);
+    return location.pathname.startsWith(path);
   };
 
   const handleNameClick = () => {
     setIsNameAnimated(true);
     setTimeout(() => setIsNameAnimated(false), 1000);
+  };
+
+  // Function to handle navigation
+  const handleNavigation = (path: string, e: React.MouseEvent) => {
+    if (path.includes('#') && location.pathname === '/') {
+      e.preventDefault();
+      const targetId = path.split('#')[1];
+      const element = document.getElementById(targetId);
+      if (element) {
+        window.scrollTo({
+          top: element.offsetTop - 100,
+          behavior: 'smooth'
+        });
+      }
+      setIsMenuOpen(false);
+    } else if (isMenuOpen) {
+      setIsMenuOpen(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    setIsMenuOpen(false);
   };
 
   return (
@@ -64,10 +94,44 @@ const Navbar = () => {
                 'text-sm uppercase tracking-wider hover:opacity-70',
                 isActive(item.path) ? 'text-black font-medium' : 'text-gray-700'
               )}
+              onClick={(e) => handleNavigation(item.path, e)}
             >
               {item.name}
             </Link>
           ))}
+          
+          {/* Auth links for desktop */}
+          {user ? (
+            <div className="flex items-center gap-4">
+              {isAdmin && (
+                <Link
+                  to="/admin/dashboard"
+                  className="text-sm uppercase tracking-wider hover:opacity-70 text-gray-700"
+                >
+                  Panel Admin
+                </Link>
+              )}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="flex items-center gap-1"
+                onClick={handleSignOut}
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="text-xs uppercase tracking-wider">Wyloguj</span>
+              </Button>
+            </div>
+          ) : (
+            <Link
+              to="/auth"
+              className="text-sm uppercase tracking-wider hover:opacity-70 text-gray-700"
+            >
+              <Button variant="outline" size="sm" className="gap-1">
+                <UserCircle className="h-4 w-4" />
+                <span>Konto</span>
+              </Button>
+            </Link>
+          )}
         </nav>
 
         {/* Mobile Menu Button */}
@@ -115,11 +179,42 @@ const Navbar = () => {
                 "text-xl uppercase tracking-wider hover:text-gray-600",
                 isActive(item.path) ? 'text-black font-medium' : 'text-gray-700'
               )}
-              onClick={() => setIsMenuOpen(false)}
+              onClick={(e) => handleNavigation(item.path, e)}
             >
               {item.name}
             </Link>
           ))}
+          
+          {/* Auth links for mobile */}
+          {user ? (
+            <>
+              {isAdmin && (
+                <Link
+                  to="/admin/dashboard"
+                  className="text-xl uppercase tracking-wider hover:text-gray-600 text-gray-700"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Panel Admin
+                </Link>
+              )}
+              <Button 
+                variant="ghost" 
+                size="lg" 
+                className="text-xl uppercase tracking-wider hover:text-gray-600 text-gray-700"
+                onClick={handleSignOut}
+              >
+                Wyloguj
+              </Button>
+            </>
+          ) : (
+            <Link
+              to="/auth"
+              className="text-xl uppercase tracking-wider hover:text-gray-600 text-gray-700"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Konto
+            </Link>
+          )}
         </nav>
       </div>
     </header>
