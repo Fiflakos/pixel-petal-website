@@ -10,6 +10,43 @@ interface ImageUploaderProps {
   onImagesChange: (images: string[]) => void;
 }
 
+// Utility function for uploading images - exported at component level
+export async function uploadImages(images: FileList | null, toast: any): Promise<string[]> {
+  if (!images || images.length === 0) return [];
+  
+  const uploadedUrls: string[] = [];
+  
+  try {
+    for (let i = 0; i < images.length; i++) {
+      const file = images[i];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.floor(Math.random() * 1000)}.${fileExt}`;
+      const filePath = `sessions/${fileName}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('images')
+        .upload(filePath, file, { upsert: true });
+      
+      if (uploadError) throw uploadError;
+      
+      const { data: urlData } = supabase.storage
+        .from('images')
+        .getPublicUrl(filePath);
+      
+      uploadedUrls.push(urlData.publicUrl);
+    }
+    
+    return uploadedUrls;
+  } catch (error: any) {
+    toast({
+      title: "Błąd przesyłania obrazów",
+      description: error.message || "Nie udało się przesłać obrazów.",
+      variant: "destructive"
+    });
+    return [];
+  }
+}
+
 const ImageUploader: React.FC<ImageUploaderProps> = ({ initialImages, onImagesChange }) => {
   const [images, setImages] = useState<FileList | null>(null);
   const [uploadedImages, setUploadedImages] = useState<string[]>(initialImages);
@@ -22,44 +59,18 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ initialImages, onImagesCh
     }
   };
 
-  const uploadImages = async () => {
+  const handleUploadImages = async () => {
     if (!images || images.length === 0) return [];
     
     setUploadLoading(true);
-    const uploadedUrls: string[] = [];
     
     try {
-      for (let i = 0; i < images.length; i++) {
-        const file = images[i];
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Date.now()}-${Math.floor(Math.random() * 1000)}.${fileExt}`;
-        const filePath = `sessions/${fileName}`;
-        
-        const { error: uploadError, data } = await supabase.storage
-          .from('images')
-          .upload(filePath, file, { upsert: true });
-        
-        if (uploadError) throw uploadError;
-        
-        const { data: urlData } = supabase.storage
-          .from('images')
-          .getPublicUrl(filePath);
-        
-        uploadedUrls.push(urlData.publicUrl);
-      }
-      
-      const newImages = [...uploadedImages, ...uploadedUrls];
+      const newImageUrls = await uploadImages(images, toast);
+      const newImages = [...uploadedImages, ...newImageUrls];
       setUploadedImages(newImages);
       onImagesChange(newImages);
       
-      return uploadedUrls;
-    } catch (error: any) {
-      toast({
-        title: "Błąd przesyłania obrazów",
-        description: error.message || "Nie udało się przesłać obrazów.",
-        variant: "destructive"
-      });
-      return [];
+      return newImageUrls;
     } finally {
       setUploadLoading(false);
     }
@@ -105,47 +116,18 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ initialImages, onImagesCh
         </div>
       )}
 
-      {uploadLoading && <div className="mt-2">Uploading images...</div>}
+      {images && images.length > 0 && (
+        <button
+          type="button"
+          onClick={handleUploadImages}
+          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+          disabled={uploadLoading}
+        >
+          {uploadLoading ? "Uploading..." : "Upload Selected Images"}
+        </button>
+      )}
     </div>
   );
 };
 
 export default ImageUploader;
-export { uploadImages };
-
-// Utility function to be exported for use in the main form
-export async function uploadImages(images: FileList | null, toast: any): Promise<string[]> {
-  if (!images || images.length === 0) return [];
-  
-  const uploadedUrls: string[] = [];
-  
-  try {
-    for (let i = 0; i < images.length; i++) {
-      const file = images[i];
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.floor(Math.random() * 1000)}.${fileExt}`;
-      const filePath = `sessions/${fileName}`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from('images')
-        .upload(filePath, file, { upsert: true });
-      
-      if (uploadError) throw uploadError;
-      
-      const { data: urlData } = supabase.storage
-        .from('images')
-        .getPublicUrl(filePath);
-      
-      uploadedUrls.push(urlData.publicUrl);
-    }
-    
-    return uploadedUrls;
-  } catch (error: any) {
-    toast({
-      title: "Błąd przesyłania obrazów",
-      description: error.message || "Nie udało się przesłać obrazów.",
-      variant: "destructive"
-    });
-    return [];
-  }
-}

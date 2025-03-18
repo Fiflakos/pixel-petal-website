@@ -27,7 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   
-  // List of admin emails
+  // List of admin emails - centralized in one place
   const adminEmails = ['your@email.com', 'fili11@op.pl'];
 
   useEffect(() => {
@@ -38,7 +38,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         setSession(data.session);
         setUser(data.session?.user ?? null);
-        setIsAdmin(data.session?.user?.email ? adminEmails.includes(data.session.user.email) : false);
+        
+        // Check if user is an admin
+        if (data.session?.user?.email) {
+          setIsAdmin(adminEmails.includes(data.session.user.email));
+        }
       }
       setLoading(false);
     };
@@ -49,7 +53,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        setIsAdmin(session?.user?.email ? adminEmails.includes(session.user.email) : false);
+        
+        // Check if user is an admin
+        if (session?.user?.email) {
+          setIsAdmin(adminEmails.includes(session.user.email));
+        } else {
+          setIsAdmin(false);
+        }
+        
         setLoading(false);
       }
     );

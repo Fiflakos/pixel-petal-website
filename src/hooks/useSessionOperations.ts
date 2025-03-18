@@ -49,8 +49,14 @@ export const useSessionOperations = () => {
       if (error) throw error;
       
       if (data) {
-        setSession(data);
-        setUploadedImages(data.image_urls || []);
+        // Ensure image_urls is always an array
+        const sessionData = {
+          ...data,
+          image_urls: Array.isArray(data.image_urls) ? data.image_urls : []
+        };
+        
+        setSession(sessionData);
+        setUploadedImages(sessionData.image_urls || []);
       }
     } catch (error: any) {
       toast({
@@ -76,6 +82,8 @@ export const useSessionOperations = () => {
 
   const updateImages = (newImages: string[]) => {
     setUploadedImages(newImages);
+    // Also update the session object
+    setSession(prev => ({ ...prev, image_urls: newImages }));
   };
 
   return {
