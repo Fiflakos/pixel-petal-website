@@ -14,7 +14,7 @@ type AuthContextType = {
 };
 
 // List of admin emails - centralized in one place
-const adminEmails = ['your@email.com', 'fili11@op.pl'];
+const adminEmails = ['your@email.com', 'wiktor@admin.pl'];
 
 const AuthContext = createContext<AuthContextType>({
   session: null,
