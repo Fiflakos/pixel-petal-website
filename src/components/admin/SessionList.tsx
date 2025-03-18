@@ -10,9 +10,10 @@ import { objectsToCSV, downloadCSV } from '@/utils/csvUtils';
 interface SessionListProps {
   sessions: SessionType[];
   loading: boolean;
+  onRefresh?: () => Promise<void>;
 }
 
-const SessionList = ({ sessions, loading }: SessionListProps) => {
+const SessionList = ({ sessions, loading, onRefresh }: SessionListProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -51,6 +52,17 @@ const SessionList = ({ sessions, loading }: SessionListProps) => {
         description: error.message || "Nie udało się wyeksportować danych.",
         variant: "destructive"
       });
+    }
+  };
+
+  const handleDelete = async (sessionId: string) => {
+    // This is a placeholder for future delete functionality
+    // When implemented, it should call onRefresh after successful deletion
+    console.log("Delete session with ID:", sessionId);
+    
+    // After deletion is implemented, we would call onRefresh to update the list
+    if (onRefresh) {
+      await onRefresh();
     }
   };
 
@@ -97,7 +109,11 @@ const SessionList = ({ sessions, loading }: SessionListProps) => {
                       <Button variant="outline" size="sm" onClick={() => navigate(`/admin/edit-session/${session.id}`)}>
                         Edytuj
                       </Button>
-                      <Button variant="destructive" size="sm">
+                      <Button 
+                        variant="destructive" 
+                        size="sm" 
+                        onClick={() => handleDelete(session.id)}
+                      >
                         Usuń
                       </Button>
                     </div>
