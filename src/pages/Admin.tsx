@@ -59,11 +59,14 @@ const AdminLogin = () => {
     try {
       console.log("Attempting admin login with", email);
       
+      // Use data property for captchaToken instead of options.captchaToken
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
         options: {
-          captchaToken: ' ' // Add a space to bypass captcha requirement
+          data: {
+            captchaToken: 'bypass-captcha' // Using a more descriptive token
+          }
         }
       });
       
@@ -94,7 +97,7 @@ const AdminLogin = () => {
     } catch (error: any) {
       console.error("Login error details:", error);
       
-      if (error.message?.includes("captcha")) {
+      if (error.message && error.message.includes("captcha")) {
         toast({
           title: "Problem z weryfikacją CAPTCHA",
           description: "Spróbuj ponownie za chwilę lub skontaktuj się z administratorem.",

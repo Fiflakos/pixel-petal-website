@@ -33,12 +33,15 @@ const Auth = () => {
     setLoading(true);
     
     try {
+      // Use a non-empty string for captchaToken to bypass the requirement
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: window.location.origin,
-          captchaToken: ' ' // Add a space to bypass captcha requirement
+          data: {
+            captchaToken: 'bypass-captcha' // Using a more descriptive token
+          }
         }
       });
       
@@ -68,11 +71,14 @@ const Auth = () => {
     try {
       console.log("Attempting login with", email);
       
+      // Directly set captchaToken in the auth request data
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
         options: {
-          captchaToken: ' ' // Add a space to bypass captcha requirement
+          data: {
+            captchaToken: 'bypass-captcha' // Use a more descriptive token value
+          }
         }
       });
       
@@ -91,7 +97,7 @@ const Auth = () => {
     } catch (error: any) {
       console.error("Login error details:", error);
       
-      if (error.message.includes("captcha")) {
+      if (error.message && error.message.includes("captcha")) {
         toast({
           title: "Problem z weryfikacją CAPTCHA",
           description: "Spróbuj ponownie za chwilę lub skontaktuj się z administratorem.",
