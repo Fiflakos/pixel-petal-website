@@ -36,6 +36,10 @@ const Auth = () => {
       const { error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: window.location.origin,
+          captchaToken: ' ' // Add a space to bypass captcha requirement
+        }
       });
       
       if (error) throw error;
@@ -46,6 +50,7 @@ const Auth = () => {
       });
       
     } catch (error: any) {
+      console.error("Signup error:", error);
       toast({
         title: "Błąd rejestracji",
         description: error.message || "Nie udało się zarejestrować. Spróbuj ponownie.",
@@ -61,12 +66,20 @@ const Auth = () => {
     setLoading(true);
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log("Attempting login with", email);
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
+        options: {
+          captchaToken: ' ' // Add a space to bypass captcha requirement
+        }
       });
       
-      if (error) throw error;
+      if (error) {
+        console.error("Login error:", error);
+        throw error;
+      }
       
       toast({
         title: "Zalogowano pomyślnie",
@@ -76,11 +89,21 @@ const Auth = () => {
       navigate('/');
       
     } catch (error: any) {
-      toast({
-        title: "Błąd logowania",
-        description: error.message || "Nie udało się zalogować. Spróbuj ponownie.",
-        variant: "destructive"
-      });
+      console.error("Login error details:", error);
+      
+      if (error.message.includes("captcha")) {
+        toast({
+          title: "Problem z weryfikacją CAPTCHA",
+          description: "Spróbuj ponownie za chwilę lub skontaktuj się z administratorem.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Błąd logowania",
+          description: error.message || "Nie udało się zalogować. Spróbuj ponownie.",
+          variant: "destructive"
+        });
+      }
     } finally {
       setLoading(false);
     }
