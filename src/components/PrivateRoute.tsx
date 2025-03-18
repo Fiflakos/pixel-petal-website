@@ -1,7 +1,8 @@
 
-import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '@/components/ui/use-toast';
 
 interface PrivateRouteProps {
   children: React.ReactNode;
@@ -14,6 +15,20 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
 }) => {
   const { user, isAdmin, loading } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!loading && requireAdmin && !isAdmin && user) {
+      // User is logged in but is not an admin
+      toast({
+        title: "Brak uprawnień",
+        description: "Nie masz uprawnień administratora, aby zobaczyć tę stronę.",
+        variant: "destructive"
+      });
+      navigate('/');
+    }
+  }, [isAdmin, loading, navigate, requireAdmin, user, toast]);
 
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen">
@@ -23,7 +38,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({
 
   if (!user) {
     // Redirect to login if not authenticated
-    return <Navigate to="/auth" state={{ from: location }} replace />;
+    return <Navigate to="/admin" state={{ from: location }} replace />;
   }
 
   if (requireAdmin && !isAdmin) {

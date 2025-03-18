@@ -3,12 +3,14 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase, SessionType } from '../lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from '../contexts/AuthContext';
 
 export const useSessionOperations = () => {
   const { id } = useParams();
   const isEditing = Boolean(id);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { isAdmin } = useAuth();
   
   const [loading, setLoading] = useState(false);
   const [session, setSession] = useState<Partial<SessionType>>({
@@ -23,6 +25,17 @@ export const useSessionOperations = () => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      // Verify admin status
+      if (!isAdmin) {
+        toast({
+          title: "Brak uprawnień",
+          description: "Tylko administratorzy mają dostęp do tej strony.",
+          variant: "destructive"
+        });
+        navigate('/admin');
+        return;
+      }
+      
       const { data } = await supabase.auth.getSession();
       if (!data.session) {
         navigate('/admin');
@@ -35,7 +48,7 @@ export const useSessionOperations = () => {
     };
     
     checkAuth();
-  }, [id, navigate, isEditing]);
+  }, [id, navigate, isEditing, isAdmin, toast]);
 
   const fetchSession = async () => {
     setLoading(true);

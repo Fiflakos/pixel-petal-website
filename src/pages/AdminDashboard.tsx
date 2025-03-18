@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase, SessionType, ContactMessage } from '../lib/supabase';
@@ -7,6 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import SessionList from '@/components/admin/SessionList';
 import MessageList from '@/components/admin/MessageList';
 import CSVTemplateDownloader from '@/components/admin/CSVTemplateDownloader';
+import { useAuth } from '../contexts/AuthContext';
 
 const AdminDashboard = () => {
   const [sessions, setSessions] = useState<SessionType[]>([]);
@@ -14,14 +16,17 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
-
-  // List of admin emails - add your email here
-  const adminEmails = ['your@email.com', 'fili11@op.pl']; // Added your email to the admins list
+  const { isAdmin, adminEmails } = useAuth();
 
   useEffect(() => {
     const checkAuth = async () => {
       const { data } = await supabase.auth.getSession();
       if (!data.session) {
+        toast({
+          title: "Brak autoryzacji",
+          description: "Musisz się zalogować, aby uzyskać dostęp do panelu administracyjnego.",
+          variant: "destructive"
+        });
         navigate('/admin');
         return;
       }
@@ -44,7 +49,14 @@ const AdminDashboard = () => {
     };
     
     checkAuth();
-  }, [navigate, toast]);
+  }, [navigate, toast, adminEmails]);
+
+  // Make sure this component is only rendered for admins
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate('/admin');
+    }
+  }, [isAdmin, navigate]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -125,7 +137,6 @@ const AdminDashboard = () => {
       </header>
       
       <main className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        {/* Added CSV Template Downloader component */}
         <CSVTemplateDownloader />
         
         <Tabs defaultValue="sessions">
@@ -135,7 +146,11 @@ const AdminDashboard = () => {
           </TabsList>
           
           <TabsContent value="sessions">
-            <SessionList sessions={sessions} loading={loading} />
+            <SessionList 
+              sessions={sessions} 
+              loading={loading} 
+              onRefresh={fetchData}
+            />
           </TabsContent>
           
           <TabsContent value="messages">
