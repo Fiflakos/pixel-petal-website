@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -58,13 +59,10 @@ const AdminLogin = () => {
     try {
       console.log("Attempting admin login with", email);
       
-      // Use correct options format for captchaToken
+      // Simplified login without CAPTCHA options
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
-        password,
-        options: {
-          captchaToken: 'bypass-captcha' // Using a more descriptive token
-        }
+        password
       });
       
       if (error) {
@@ -94,19 +92,11 @@ const AdminLogin = () => {
     } catch (error: any) {
       console.error("Login error details:", error);
       
-      if (error.message && error.message.includes("captcha")) {
-        toast({
-          title: "Problem z weryfikacją CAPTCHA",
-          description: "Spróbuj ponownie za chwilę lub skontaktuj się z administratorem.",
-          variant: "destructive"
-        });
-      } else {
-        toast({
-          title: "Błąd logowania",
-          description: error.message || "Nie udało się zalogować. Spróbuj ponownie.",
-          variant: "destructive"
-        });
-      }
+      toast({
+        title: "Błąd logowania",
+        description: error.message || "Nie udało się zalogować. Spróbuj ponownie.",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
