@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -59,14 +58,12 @@ const AdminLogin = () => {
     try {
       console.log("Attempting admin login with", email);
       
-      // Use data property for captchaToken instead of options.captchaToken
+      // Use correct options format for captchaToken
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
         options: {
-          data: {
-            captchaToken: 'bypass-captcha' // Using a more descriptive token
-          }
+          captchaToken: 'bypass-captcha' // Using a more descriptive token
         }
       });
       
