@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from '@/lib/supabase';
 import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import { Image, X, UploadCloud } from 'lucide-react';
 
 interface ImageUploaderProps {
   initialImages: string[];
@@ -60,17 +62,34 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ initialImages, onImagesCh
   };
 
   const handleUploadImages = async () => {
-    if (!images || images.length === 0) return [];
+    if (!images || images.length === 0) return;
     
     setUploadLoading(true);
     
     try {
       const newImageUrls = await uploadImages(images, toast);
-      const newImages = [...uploadedImages, ...newImageUrls];
-      setUploadedImages(newImages);
-      onImagesChange(newImages);
       
-      return newImageUrls;
+      if (newImageUrls.length > 0) {
+        const newImages = [...uploadedImages, ...newImageUrls];
+        setUploadedImages(newImages);
+        onImagesChange(newImages);
+        
+        // Clear the file input after successful upload
+        setImages(null);
+        const fileInput = document.getElementById('images') as HTMLInputElement;
+        if (fileInput) fileInput.value = '';
+        
+        toast({
+          title: "Zdjęcia dodane",
+          description: `Pomyślnie dodano ${newImageUrls.length} zdjęć.`,
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Błąd przesyłania obrazów",
+        description: error.message || "Nie udało się przesłać obrazów.",
+        variant: "destructive"
+      });
     } finally {
       setUploadLoading(false);
     }
@@ -81,50 +100,109 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({ initialImages, onImagesCh
     newImages.splice(index, 1);
     setUploadedImages(newImages);
     onImagesChange(newImages);
+    
+    toast({
+      title: "Zdjęcie usunięte",
+      description: "Usunięto zdjęcie z listy.",
+    });
+  };
+
+  const setAsMainImage = (index: number) => {
+    // Move the selected image to the first position
+    if (index === 0) return; // Already the main image
+    
+    const newImages = [...uploadedImages];
+    const mainImage = newImages[index];
+    newImages.splice(index, 1);
+    newImages.unshift(mainImage);
+    
+    setUploadedImages(newImages);
+    onImagesChange(newImages);
+    
+    toast({
+      title: "Zdjęcie główne",
+      description: "Zmieniono zdjęcie główne sesji.",
+    });
   };
 
   return (
-    <div>
-      <Label htmlFor="images">Zdjęcia</Label>
-      <Input
-        id="images"
-        type="file"
-        onChange={handleImageChange}
-        multiple
-        accept="image/*"
-        className="mt-1"
-      />
+    <div className="space-y-4">
+      <div className="flex flex-col space-y-2">
+        <Label htmlFor="images">Zdjęcia sesji</Label>
+        <div className="flex items-center gap-2">
+          <Input
+            id="images"
+            type="file"
+            onChange={handleImageChange}
+            multiple
+            accept="image/*"
+            className="flex-1"
+          />
+          
+          {images && images.length > 0 && (
+            <Button
+              type="button"
+              onClick={handleUploadImages}
+              className="flex items-center gap-2"
+              disabled={uploadLoading}
+            >
+              <UploadCloud className="w-4 h-4" />
+              {uploadLoading ? "Przesyłanie..." : "Prześlij"}
+            </Button>
+          )}
+        </div>
+        <p className="text-xs text-gray-500">
+          Pierwsze zdjęcie na liście będzie zdjęciem głównym pokazywanym w galerii.
+        </p>
+      </div>
       
       {uploadedImages.length > 0 && (
-        <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {uploadedImages.map((url, index) => (
-            <div key={index} className="relative">
-              <img
-                src={url}
-                alt={`Uploaded ${index}`}
-                className="w-full h-32 object-cover rounded"
-              />
-              <button
-                type="button"
-                className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
-                onClick={() => removeImage(index)}
-              >
-                X
-              </button>
-            </div>
-          ))}
+        <div className="border rounded-md p-4">
+          <h3 className="font-medium mb-3">Zdjęcia w sesji ({uploadedImages.length})</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {uploadedImages.map((url, index) => (
+              <div key={index} className="relative group border rounded-md overflow-hidden">
+                <img
+                  src={url}
+                  alt={`Zdjęcie ${index + 1}`}
+                  className="w-full h-32 object-cover"
+                />
+                
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  {index !== 0 && (
+                    <Button 
+                      type="button" 
+                      size="sm" 
+                      variant="secondary" 
+                      onClick={() => setAsMainImage(index)}
+                      className="flex items-center gap-1"
+                    >
+                      <Image className="w-3 h-3" />
+                      <span className="text-xs">Główne</span>
+                    </Button>
+                  )}
+                  
+                  <Button 
+                    type="button" 
+                    size="sm" 
+                    variant="destructive" 
+                    onClick={() => removeImage(index)}
+                    className="flex items-center gap-1"
+                  >
+                    <X className="w-3 h-3" />
+                    <span className="text-xs">Usuń</span>
+                  </Button>
+                </div>
+                
+                {index === 0 && (
+                  <div className="absolute top-0 left-0 bg-green-500 text-white px-2 py-1 text-xs">
+                    Główne
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      )}
-
-      {images && images.length > 0 && (
-        <button
-          type="button"
-          onClick={handleUploadImages}
-          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
-          disabled={uploadLoading}
-        >
-          {uploadLoading ? "Uploading..." : "Upload Selected Images"}
-        </button>
       )}
     </div>
   );

@@ -100,36 +100,13 @@ const Navbar = () => {
             </Link>
           ))}
           
-          {/* Auth links for desktop */}
-          {user ? (
-            <div className="flex items-center gap-4">
-              {isAdmin && (
-                <Link
-                  to="/admin/dashboard"
-                  className="text-sm uppercase tracking-wider hover:opacity-70 text-gray-700"
-                >
-                  Panel Admin
-                </Link>
-              )}
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="flex items-center gap-1"
-                onClick={handleSignOut}
-              >
-                <LogOut className="h-4 w-4" />
-                <span className="text-xs uppercase tracking-wider">Wyloguj</span>
-              </Button>
-            </div>
-          ) : (
+          {/* Only show admin link for admins, removed user authentication link */}
+          {isAdmin && (
             <Link
-              to="/auth"
+              to="/admin/dashboard"
               className="text-sm uppercase tracking-wider hover:opacity-70 text-gray-700"
             >
-              <Button variant="outline" size="sm" className="gap-1">
-                <UserCircle className="h-4 w-4" />
-                <span>Konto</span>
-              </Button>
+              Panel Admin
             </Link>
           )}
         </nav>
@@ -185,34 +162,14 @@ const Navbar = () => {
             </Link>
           ))}
           
-          {/* Auth links for mobile */}
-          {user ? (
-            <>
-              {isAdmin && (
-                <Link
-                  to="/admin/dashboard"
-                  className="text-xl uppercase tracking-wider hover:text-gray-600 text-gray-700"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Panel Admin
-                </Link>
-              )}
-              <Button 
-                variant="ghost" 
-                size="lg" 
-                className="text-xl uppercase tracking-wider hover:text-gray-600 text-gray-700"
-                onClick={handleSignOut}
-              >
-                Wyloguj
-              </Button>
-            </>
-          ) : (
+          {/* Only show admin link for admins in mobile menu */}
+          {isAdmin && (
             <Link
-              to="/auth"
+              to="/admin/dashboard"
               className="text-xl uppercase tracking-wider hover:text-gray-600 text-gray-700"
               onClick={() => setIsMenuOpen(false)}
             >
-              Konto
+              Panel Admin
             </Link>
           )}
         </nav>
