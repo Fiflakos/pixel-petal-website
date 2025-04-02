@@ -59,7 +59,7 @@ const AdminLogin = () => {
     try {
       console.log("Attempting admin login with", email);
       
-      // Simplified login without CAPTCHA options
+      // Simple login without any captcha options
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -151,8 +151,12 @@ const AdminLogin = () => {
         </form>
         
         <div className="mt-4 text-sm text-center text-gray-600">
-          <p>Konto administratora powinno być wcześniej skonfigurowane w systemie.</p>
-          <p className="mt-2">W przypadku problemów z logowaniem, skontaktuj się z administratorem systemu.</p>
+          <p>Dozwolone emaile administratorów:</p>
+          <ul className="mt-2 list-disc list-inside">
+            {adminEmails.map((email, index) => (
+              <li key={index}>{email}</li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>

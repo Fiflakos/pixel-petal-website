@@ -12,7 +12,6 @@ import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
 import AdminDashboard from "./pages/AdminDashboard";
 import SessionForm from "./pages/SessionForm";
-import Auth from "./pages/Auth";
 
 // Tworzenie klienta zapytań z odpowiednią konfiguracją
 const queryClient = new QueryClient({
@@ -35,7 +34,6 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/sesje" element={<Sesje />} />
-              <Route path="/auth" element={<Auth />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/dashboard" element={
                 <PrivateRoute requireAdmin={true}>
